@@ -8,6 +8,17 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  */
+
+ $activeCellGradientStartColor: #02bef7;
+ $activeCellGradientEndColor: #009acb;
+ $activeCellGradientBackgroundColor: #01afe7;
+ $activeCellBorderColor: #0099cf #0099cf #008ebe;
+
+ $todayCellGradientStartColor: #fdd49a;
+ $todayCellGradientEndColor: #fdf59a;
+ $todayCellGradientBackgroundColor: #fde19a;
+ $todayCellBorderColor: #fdf59a #fdf59a #fbed50;
+ 
  
  @mixin gradient($start, $end, $bg-color) {
    background-color: $bg-color;
@@ -103,16 +114,8 @@
     & td.today:hover,
     & td.today.disabled,
     & td.today.disabled:hover {
-      background-color: #fde19a;
-      background-image: -moz-linear-gradient(top, #fdd49a, #fdf59a);
-      background-image: -ms-linear-gradient(top, #fdd49a, #fdf59a);
-      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fdd49a), to(#fdf59a));
-      background-image: -webkit-linear-gradient(top, #fdd49a, #fdf59a);
-      background-image: -o-linear-gradient(top, #fdd49a, #fdf59a);
-      background-image: linear-gradient(top, #fdd49a, #fdf59a);
-      background-repeat: repeat-x;
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fdd49a', endColorstr='#fdf59a', GradientType=0);
-      border-color: #fdf59a #fdf59a #fbed50;
+      @include gradient($todayCellGradientStartColor, $todayCellGradientEndColor, $todayCellGradientBackgroundColor);
+      border-color: $todayCellBorderColor;
       border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
       filter: progid:dximagetransform.microsoft.gradient(enabled=false);
     }
@@ -136,7 +139,7 @@
     & td.today:hover[disabled],
     & td.today.disabled[disabled],
     & td.today.disabled:hover[disabled] {
-      background-color: #fdf59a;
+      background-color: $todayCellGradientBackgroundColor;
     }
     & td.today:active,
     & td.today:hover:active,
@@ -146,14 +149,14 @@
     & td.today:hover.active,
     & td.today.disabled.active,
     & td.today.disabled:hover.active {
-      background-color: #fbf069 \9;
+      background-color: $todayCellGradientBackgroundColor \9;
     }
     & td.active,
     & td.active:hover,
     & td.active.disabled,
     & td.active.disabled:hover {  
-      @include gradient(#02bef7, #009acb, #01afe7);
-      border-color: #0099cf #0099cf #008ebe;
+      @include gradient($activeCellGradientStartColor,  $activeCellGradientEndColor,  $activeCellGradientBackgroundColor);
+      border-color: $activeCellBorderColor;
       border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
       color: #fff;
       text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -178,7 +181,7 @@
     & td.active:hover[disabled],
     & td.active.disabled[disabled],
     & td.active.disabled:hover[disabled] {
-      background-color: #01afe7;
+      background-color: $activeCellGradientBackgroundColor;
     }
     & td.active:active,
     & td.active:hover:active,
@@ -188,7 +191,7 @@
     & td.active:hover.active,
     & td.active.disabled.active,
     & td.active.disabled:hover.active {
-      background-color: #003399 \9;
+      background-color: $activeCellGradientBackgroundColor \9;
     }
     & td span {
       display: block;
@@ -213,8 +216,8 @@
       &.active:hover,
       &.active.disabled,
       &.active.disabled:hover {
-        @include gradient(#02bef7, #009acb, #01afe7);
-        border-color: #0099cf #0099cf #008ebe;
+        @include gradient($activeCellGradientStartColor,  $activeCellGradientEndColor,  $activeCellGradientBackgroundColor);
+        border-color: $activeCellBorderColor;
         border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
         color: #fff;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -239,7 +242,7 @@
       &.active:hover[disabled],
       &.active.disabled[disabled],
       &.active.disabled:hover[disabled] {
-        background-color: #01afe7;
+        background-color: $activeCellGradientBackgroundColor;
       }
 
       &.active:active,
@@ -250,7 +253,7 @@
       &.active:hover.active,
       &.active.disabled.active,
       &.active.disabled:hover.active {
-        background-color: #003399 \9;
+        background-color: $activeCellGradientBackgroundColor \9;
       }
 
       &.old {
