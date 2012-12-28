@@ -1,2 +1,5 @@
 instrumented/
 tests/coverage.html
+tests/test.html
+codekit-config.json
+
