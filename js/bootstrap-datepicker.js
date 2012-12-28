@@ -4,7 +4,7 @@
  * =========================================================
  * Copyright 2012 Stefan Petre
  * Improvements by Andrew Rowls
- * Modified by ERDIL
+ * Modified by Aurélien Masson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
