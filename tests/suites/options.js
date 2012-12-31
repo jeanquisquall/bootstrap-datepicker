@@ -262,3 +262,57 @@ test('Today Highlight: today\'s date is highlighted when not active', patch_date
         ok(!target.hasClass('today'), 'Tomorrow is not marked with "today" class');
 }));
 
+test('Today Highlight: today\'s date is highlighted when not active in month view when minViewMode', patch_date(function(Date){
+    Date.now = new Date(2012, 2, 15);
+    var input = $('<input />')
+                .appendTo('#qunit-fixture')
+                .val('2012-03-05')
+                .datepicker({
+                    format: 'yyyy-mm-dd',
+                    todayHighlight: true,
+                    minViewMode: 'months',
+                    startView: 'year'
+                }),
+        dp = input.data('datepicker'),
+        picker = dp.picker,
+        target;
+
+        input.focus();
+        ok(picker.find('.datepicker-months').is(':visible'), 'Months view visible');
+        equal(picker.find('.datepicker-months thead .switch').text(), '2012', 'Title is "2012"');
+
+        target = picker.find('.datepicker-months tbody span:contains("Mar")');
+        ok(target.hasClass('today'), 'Today is marked with "today" class');
+        target = picker.find('.datepicker-months tbody span:contains("Feb")');
+        ok(!target.hasClass('today'), 'Prev month is not marked with "today" class');
+        target = picker.find('.datepicker-months tbody span:contains("Apr")');
+        ok(!target.hasClass('today'), 'Next month is not marked with "today" class');
+}));
+
+test('Today Highlight: today\'s date is highlighted when not active in quarterly view too when minViewMode', patch_date(function(Date){
+    Date.now = new Date(2012, 4, 15);
+    var input = $('<input />')
+                .appendTo('#qunit-fixture')
+                .val('2012-04-05')
+                .datepicker({
+                    format: 'yyyy-mm-dd',
+                    todayHighlight: true,
+                    quarterlyView: true,
+                    startView: 'year'
+                }),
+        dp = input.data('datepicker'),
+        picker = dp.picker,
+        target;
+
+        input.focus();
+        ok(picker.find('.datepicker-quarters').is(':visible'), 'Quarters view visible');
+        equal(picker.find('.datepicker-quarters thead .switch').text(), '2012', 'Title is "2012"');
+
+        target = picker.find('.datepicker-quarters tbody span:contains("Ap")');
+        ok(target.hasClass('today'), 'Today is marked with "today" class');
+        target = picker.find('.datepicker-quarters tbody span:contains("Jan")');
+        ok(!target.hasClass('today'), 'Prev quarter is not marked with "today" class');
+        target = picker.find('.datepicker-quarters tbody span:contains("Sep")');
+        ok(!target.hasClass('today'), 'Next quarter is not marked with "today" class');
+}));
+

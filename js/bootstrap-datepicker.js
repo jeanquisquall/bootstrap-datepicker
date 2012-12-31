@@ -38,7 +38,6 @@
 		this.language = options.language||this.element.data('date-language')||"en";
 		this.language = this.language in dates ? this.language : "en";
 		this.minViewMode = options.minViewMode||0;
-    this.quarterlyView = options.quarterlyView||false;
     this.weeklyView = options.weeklyView||false;
 		if (typeof this.minViewMode === 'string') {
 			switch (this.minViewMode) {
@@ -54,14 +53,35 @@
 			}
 		}
     
+    if (options.quarterlyView) {
+      DPGlobal.modes = [
+        {
+          clsName: 'days',
+          navFnc: 'Quarter',
+          navStep: 1
+        },
+        {
+          clsName: 'quarters',
+          navFnc: 'FullYear',
+          navStep: 1
+        },
+        {
+          clsName: 'years',
+          navFnc: 'FullYear',
+          navStep: 10
+        }
+      ];
+      this.minViewMode = 1;
+    }
+    
 		this.format = DPGlobal.parseFormat(options.format||this.element.data('date-format')||'mm/dd/yyyy');
 		this.isInput = this.element.is('input');
     this.isInline = false;
 		this.component = this.element.is('.date') ? this.element.find('.add-on') : false;
 		this.hasInput = this.component && this.element.find('input').length;
-		if(this.component && this.component.length === 0)
+		if(this.component && this.component.length === 0) {
 			this.component = false;
-
+    }
 		this._attachEvents();
 
 		this.forceParse = true;
@@ -73,7 +93,7 @@
 
 		$(document).on('mousedown', function (e) {
 			// Clicked outside the datepicker, hide it
-			if ($(e.target).closest('.datepicker').length == 0) {
+			if ($(e.target).closest('.datepicker').length === 0) {
 				that.hide();
 			}
 		});
@@ -101,8 +121,6 @@
 			case 'year':
 				this.viewMode = this.startViewMode = 1;
 				break;
-			case 0:
-			case 'month':
 			default:
 				this.viewMode = this.startViewMode = 0;
 				break;
@@ -118,6 +136,7 @@
 		this.setStartDate(options.startDate||this.element.data('date-startdate'));
 		this.setEndDate(options.endDate||this.element.data('date-enddate'));
 		this.fillDow();
+    this.fillQuarters();
 		this.fillMonths();
 		this.update();
 		this.showMode();
@@ -207,8 +226,8 @@
 			});
 		},
 
-		hide: function(e){
-      if(this.isInline) return;
+		hide: function(){
+      if(this.isInline) {return;}
 			this.picker.hide();
 			$(window).off('resize', this.place);
 			this.viewMode = this.startViewMode;
@@ -217,14 +236,9 @@
 				$(document).off('mousedown', this.hide);
 			}
 
-			if (
-				this.forceParse &&
-				(
-					this.isInput && this.element.val() ||
-					this.hasInput && this.element.find('input').val()
-				)
-			)
+			if (this.forceParse && (this.isInput && this.element.val() || this.hasInput && this.element.find('input').val())) {
 				this.setValue();
+      }
 			this.element.trigger({
 				type: 'hide',
 				date: this.date
@@ -239,7 +253,7 @@
 
 		getDate: function() {
 			var d = this.getUTCDate();
-			return new Date(d.getTime() + (d.getTimezoneOffset()*60000))
+			return new Date(d.getTime() + (d.getTimezoneOffset()*60000));
 		},
 
 		getUTCDate: function() {
@@ -268,8 +282,8 @@
 		},
     
     getFormattedDate: function(format) {
-      if(format == undefined) format = this.format;
-        return DPGlobal.formatDate(this.date, format, this.language);
+      if(format === undefined) {format = this.format;}
+      return DPGlobal.formatDate(this.date, format, this.language);
     },
 
 		setStartDate: function(startDate){
@@ -291,9 +305,9 @@
 		},
 
 		place: function(){
-      if(this.isInline) return;
+      if(this.isInline) {return;}
 			var zIndex = parseInt(this.element.parents().filter(function() {
-							return $(this).css('z-index') != 'auto';
+							return $(this).css('z-index') !== 'auto';
 						}).first().css('z-index'))+10;
 			var offset = this.component ? this.component.offset() : this.element.offset();
 			this.picker.css({
@@ -309,10 +323,10 @@
         date = arguments[0];
         fromArgs = true;
       } else {
-        date = this.isInput ? this.element.prop('value') : this.element.data('date') || this.element.find('input').prop('value');      	
+        date = this.isInput ? this.element.prop('value') : this.element.data('date') || this.element.find('input').prop('value');
       }
       this.date = DPGlobal.parseDate(date, this.format, this.language);
-      if(fromArgs) this.setValue();
+      if(fromArgs) {this.setValue();}
 			if (this.date < this.startDate) {
 				this.viewDate = new Date(this.startDate);
 			} else if (this.date > this.endDate) {
@@ -335,12 +349,21 @@
 
 		fillMonths: function(){
 			var html = '';
-			var i = 0
+			var i = 0;
 			while (i < 12) {
 				html += '<span class="month">'+dates[this.language].monthsShort[i++]+'</span>';
 			}
 			this.picker.find('.datepicker-months td').html(html);
 		},
+    
+    fillQuarters: function() {
+			var html = '';
+			var i = 0;
+			while (i < 4) {
+				html += '<span class="quarter">'+dates[this.language].quarters[i++]+'</span>';
+			}
+			this.picker.find('.datepicker-quarters td').html(html);
+    },
 
 		fill: function() {
 			var d = new Date(this.viewDate),
@@ -358,6 +381,7 @@
 						.text(dates[this.language].today)
 						.toggle(this.todayBtn);
 			this.updateNavArrows();
+      this.fillQuarters();
 			this.fillMonths();
 			var prevMonth = UTCDate(year, month-1, 28,0,0,0,0),
 				day = DPGlobal.getDaysInMonth(prevMonth.getUTCFullYear(), prevMonth.getUTCMonth());
@@ -369,30 +393,30 @@
 			var html = [];
 			var clsName;
 			while(prevMonth.valueOf() < nextMonth) {
-				if (prevMonth.getUTCDay() == this.weekStart) {
+				if (prevMonth.getUTCDay() === this.weekStart) {
 					html.push('<tr>');
 				}
 				clsName = '';
-				if (prevMonth.getUTCFullYear() < year || (prevMonth.getUTCFullYear() == year && prevMonth.getUTCMonth() < month)) {
+				if (prevMonth.getUTCFullYear() < year || (prevMonth.getUTCFullYear() === year && prevMonth.getUTCMonth() < month)) {
 					clsName += ' old';
-				} else if (prevMonth.getUTCFullYear() > year || (prevMonth.getUTCFullYear() == year && prevMonth.getUTCMonth() > month)) {
+				} else if (prevMonth.getUTCFullYear() > year || (prevMonth.getUTCFullYear() === year && prevMonth.getUTCMonth() > month)) {
 					clsName += ' new';
 				}
 				// Compare internal UTC date with local today, not UTC today
 				if (this.todayHighlight &&
-					prevMonth.getUTCFullYear() == today.getFullYear() &&
-					prevMonth.getUTCMonth() == today.getMonth() &&
-					prevMonth.getUTCDate() == today.getDate()) {
+					prevMonth.getUTCFullYear() === today.getFullYear() &&
+					prevMonth.getUTCMonth() === today.getMonth() &&
+					prevMonth.getUTCDate() === today.getDate()) {
 					clsName += ' today';
 				}
-				if (prevMonth.valueOf() == currentDate) {
+				if (prevMonth.valueOf() === currentDate) {
 					clsName += ' active';
 				}
 				if (prevMonth.valueOf() < this.startDate || prevMonth.valueOf() > this.endDate) {
 					clsName += ' disabled';
 				}
 				html.push('<td class="day'+clsName+'">'+prevMonth.getUTCDate() + '</td>');
-				if (prevMonth.getUTCDay() == this.weekEnd) {
+				if (prevMonth.getUTCDay() === this.weekEnd) {
 					html.push('</tr>');
 				}
 				prevMonth.setUTCDate(prevMonth.getUTCDate()+1);
@@ -405,17 +429,30 @@
 							.text(year)
 							.end()
 						.find('span').removeClass('active');
-			if (currentYear == year) {
+			var quarters = this.picker.find('.datepicker-quarters')
+						.find('th:eq(1)')
+							.text(year)
+							.end()
+						.find('span').removeClass('active');
+			if (currentYear === year) {
 				months.eq(this.date.getUTCMonth()).addClass('active');
+        quarters.eq(this.date.getUTCMonth() / 3).addClass('active');
 			}
+      if (this.minViewMode === 1 && today.getUTCFullYear() === year) {
+        months.eq(today.getUTCMonth()).addClass('today');
+        quarters.eq(today.getUTCMonth() / 3).addClass('today');
+      }
 			if (year < startYear || year > endYear) {
 				months.addClass('disabled');
+        quarters.addClass('disabled');
 			}
-			if (year == startYear) {
+			if (year === startYear) {
 				months.slice(0, startMonth).addClass('disabled');
+				quarters.slice(0, startMonth / 3).addClass('disabled');
 			}
-			if (year == endYear) {
+			if (year === endYear) {
 				months.slice(endMonth+1).addClass('disabled');
+				quarters.slice((endMonth / 3) + 1).addClass('disabled');
 			}
 
 			html = '';
@@ -427,7 +464,7 @@
 								.find('td');
 			year -= 1;
 			for (var i = -1; i < 11; i++) {
-				html += '<span class="year'+(i == -1 || i == 10 ? ' old' : '')+(currentYear == year ? ' active' : '')+(year < startYear || year > endYear ? ' disabled' : '')+'">'+year+'</span>';
+				html += '<span class="year'+(i === -1 || i === 10 ? ' old' : '')+(currentYear === year ? ' active' : '')+(year < startYear || year > endYear ? ' disabled' : '')+'">'+year+'</span>';
 				year += 1;
 			}
 			yearCont.html(html);
@@ -470,7 +507,7 @@
 			e.stopPropagation();
 			e.preventDefault();
 			var target = $(e.target).closest('span, td, th');
-			if (target.length == 1) {
+			if (target.length === 1) {
 				switch(target[0].nodeName.toLowerCase()) {
 					case 'th':
 						switch(target[0].className) {
@@ -479,7 +516,7 @@
 								break;
 							case 'prev':
 							case 'next':
-								var dir = DPGlobal.modes[this.viewMode].navStep * (target[0].className == 'prev' ? -1 : 1);
+								var dir = DPGlobal.modes[this.viewMode].navStep * (target[0].className === 'prev' ? -1 : 1);
 								switch(this.viewMode){
 									case 0:
 										this.viewDate = this.moveMonth(this.viewDate, dir);
@@ -499,7 +536,7 @@
 								date.setUTCMilliseconds(0);
 
 								this.showMode(-2);
-								var which = this.todayBtn == 'linked' ? null : 'view';
+								var which = this.todayBtn === 'linked' ? null : 'view';
 								this._setDate(date, which);
 								break;
 						}
@@ -514,29 +551,44 @@
 									type: 'changeMonth',
 									date: this.viewDate
 								});
-    						if (this.minViewMode === 1) {
-    							this.date = new Date(this.viewDate);
-    							this.element.trigger({
-    								type: 'changeDate',
-    								date: this.date,
-    								viewMode: DPGlobal.modes[this.viewMode].clsName
-    							});
-    						}                            
-							} else {
-								var year = parseInt(target.text(), 10)||0;
-								this.viewDate.setUTCFullYear(year);
+                if (this.minViewMode === 1) {
+                  this.date = new Date(this.viewDate);
+                  this.element.trigger({
+                    type: 'changeDate',
+                    date: this.date,
+                    viewMode: DPGlobal.modes[this.viewMode].clsName
+                  });
+                }
+							} else if (target.is('.quarter')) {
+								var month = target.parent().find('span').index(target) * 3;
+								this.viewDate.setUTCMonth(month);
 								this.element.trigger({
-									type: 'changeYear',
+									type: 'changeMonth',
 									date: this.viewDate
 								});
-    						if (this.minViewMode === 2) {
-    							this.date = new Date(this.viewDate);
-    							this.element.trigger({
-    								type: 'changeDate',
-    								date: this.date,
-    								viewMode: DPGlobal.modes[this.viewMode].clsName
-    							});
-    						}                            
+                if (this.minViewMode === 1) {
+                  this.date = new Date(this.viewDate);
+                  this.element.trigger({
+                    type: 'changeDate',
+                    date: this.date,
+                    viewMode: DPGlobal.modes[this.viewMode].clsName
+                  });
+                }
+              } else {
+                var year = parseInt(target.text(), 10)||0;
+                this.viewDate.setUTCFullYear(year);
+                this.element.trigger({
+                  type: 'changeYear',
+                  date: this.viewDate
+                });
+                if (this.minViewMode === 2) {
+                  this.date = new Date(this.viewDate);
+                  this.element.trigger({
+                    type: 'changeDate',
+                    date: this.date,
+                    viewMode: DPGlobal.modes[this.viewMode].clsName
+                  });
+                }
 							}
 							this.showMode(-1);
 							this.fill();
@@ -548,14 +600,14 @@
 							var year = this.viewDate.getUTCFullYear(),
 								month = this.viewDate.getUTCMonth();
 							if (target.is('.old')) {
-								if (month == 0) {
+								if (month === 0) {
 									month = 11;
 									year -= 1;
 								} else {
 									month -= 1;
 								}
 							} else if (target.is('.new')) {
-								if (month == 11) {
+								if (month === 11) {
 									month = 0;
 									year += 1;
 								} else {
@@ -570,10 +622,12 @@
 		},
 
 		_setDate: function(date, which){
-			if (!which || which == 'date')
+			if (!which || which === 'date') {
 				this.date = date;
-			if (!which || which  == 'view')
+      }
+			if (!which || which  === 'view') {
 				this.viewDate = date;
+      }
 			this.fill();
 			this.setValue();
 			this.element.trigger({
@@ -595,15 +649,15 @@
 		},
 
 		moveMonth: function(date, dir){
-			if (!dir) return date;
+			if (!dir) {return date;}
 			var new_date = new Date(date.valueOf()),
 				day = new_date.getUTCDate(),
 				month = new_date.getUTCMonth(),
 				mag = Math.abs(dir),
 				new_month, test;
 			dir = dir > 0 ? 1 : -1;
-			if (mag == 1){
-				test = dir == -1
+			if (mag === 1){
+				test = dir === -1
 					// If going back one month, make sure month is not current month
 					// (eg, Mar 31 -> Feb 31 == Feb 28, not Mar 02)
 					? function(){ return new_date.getUTCMonth() == month; }
@@ -767,6 +821,7 @@
 			daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
 			months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      quarters: ["January - February - March", "April - May - June", "July - August - September", "October - November - December"],
 			today: "Today"
 		}
 	}
@@ -928,6 +983,13 @@
 								'</table>'+
 							'</div>'+
 							'<div class="datepicker-months">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="datepicker-quarters">'+
 								'<table class="table-condensed">'+
 									DPGlobal.headTemplate+
 									DPGlobal.contTemplate+
