@@ -398,35 +398,34 @@
           day = moment(d).startOf('month').day(1),
           currentSelectedWeek = moment(this.date).format('ww'),
           cssClass = "";
-      if (currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww')) {
-        cssClass = " active";
-      }
-      if (today.year() === viewYear && today.format('ww') === day.format('ww')) {        
-        cssClass += " today";
-      }
-      html += '<span class="week'+cssClass+'" data-date="'+day.format('YYYY/MM/DD')+'">'+
-                '<span class="week-number">Semaine '+day.format('ww')+'</span>'+
-                '<span class="week-desc">Du '+moment(day).format('DD/MM')+' au '+moment(day).day(7).format('DD/MM')+'</span>'+
-              '</span>';
-
+          
+      html += this._weekAsHtml(day, 
+                          currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww'), 
+                          today.year() === viewYear && today.format('ww') === day.format('ww'));
       day = moment(day).day(8);        
       
       while (day.month() === month) {
-        cssClass = "";
-        if (currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww')) {
-          cssClass = " active";
-        }
-        if (today.year() === viewYear && today.format('ww') === day.format('ww')) {
-          cssClass += " today";
-        }        
-        html += '<span class="week'+cssClass+'" data-date="'+day.format('YYYY/MM/DD')+'">'+
-                  '<span class="week-number">Semaine '+day.format('ww')+'</span>'+
-                  '<span class="week-desc">Du '+ moment(day).format('DD/MM') + ' au ' + moment(day).day(7).format('DD/MM') +'</span>'+
-                '</span>';
+        html += this._weekAsHtml(day,
+                            currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww'), 
+                            today.year() === viewYear && today.format('ww') === day.format('ww'));
         day = moment(day).day(8);        
       }
       
 			this.picker.find('.datepicker-weeks td').html(html);      
+    },
+    
+    _weekAsHtml: function(day, isActive, isToday) {
+      var cssClass = "";
+      if (isActive) {
+        cssClass = " active";
+      }
+      if (isToday) {
+        cssClass += " today";
+      }        
+      return '<span class="week'+cssClass+'" data-date="'+day.format('YYYY/MM/DD')+'">'+
+                '<span class="week-number">'+dates[this.language].week+' '+day.format('ww')+'</span>'+
+                '<span class="week-desc">'+dates[this.language].from+' '+moment(day).format('DD/MM')+' '+dates[this.language].to+' '+moment(day).day(7).format('DD/MM')+'</span>'+
+              '</span>';
     },
 
 		fill: function() {
@@ -885,6 +884,9 @@
 			months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       quarters: ["January - February - March", "April - May - June", "July - August - September", "October - November - December"],
+      week: "Week",
+      from: "From",
+      to: "to",
 			today: "Today"
 		}
 	}

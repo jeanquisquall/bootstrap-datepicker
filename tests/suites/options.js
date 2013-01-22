@@ -335,9 +335,9 @@ test('Today Highlight: today\'s date is highlighted in weekly view too when minV
         ok(picker.find('.datepicker-weeks').is(':visible'), 'Weeks view visible');
         equal(picker.find('.datepicker-weeks thead .switch').text(), 'March 2013', 'Title is "March 2013"');
 
-        target = picker.find('.datepicker-weeks tbody span:contains("Semaine 11")');
+        target = picker.find('.datepicker-weeks tbody span:contains("Week 11")');
         ok(target.hasClass('today'), 'Today is marked with "today" class');
-        target = picker.find('.datepicker-weeks tbody span:contains("Semaine 10")');
+        target = picker.find('.datepicker-weeks tbody span:contains("Week 10")');
         ok(!target.hasClass('today'), 'Previous week is not marked with "today" class');
 }));
 
