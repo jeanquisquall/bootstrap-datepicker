@@ -404,7 +404,7 @@
       if (today.year() === viewYear && today.format('ww') === day.format('ww')) {        
         cssClass += " today";
       }
-      html += '<span class="week'+cssClass+'" data-date="'+day.format('L')+'">'+
+      html += '<span class="week'+cssClass+'" data-date="'+day.format('YYYY/MM/DD')+'">'+
                 '<span class="week-number">Semaine '+day.format('ww')+'</span>'+
                 '<span class="week-desc">Du '+moment(day).format('DD/MM')+' au '+moment(day).day(7).format('DD/MM')+'</span>'+
               '</span>';
@@ -419,7 +419,7 @@
         if (today.year() === viewYear && today.format('ww') === day.format('ww')) {
           cssClass += " today";
         }        
-        html += '<span class="week'+cssClass+'" data-date="'+day.format('L')+'">'+
+        html += '<span class="week'+cssClass+'" data-date="'+day.format('YYYY/MM/DD')+'">'+
                   '<span class="week-number">Semaine '+day.format('ww')+'</span>'+
                   '<span class="week-desc">Du '+ moment(day).format('DD/MM') + ' au ' + moment(day).day(7).format('DD/MM') +'</span>'+
                 '</span>';
@@ -635,7 +635,7 @@
   							this._setDate(UTCDate(year, month, day,0,0,0,0));
               } else if (target.is('.week') || target.is('.week-number') || target.is('.week-desc')) {
                 target = target.closest('span.week');
-                var date = moment(target.data('date'));
+                var date = moment(target.data('date'), 'YYYY/MM/DD');
                 this._setDate(date.toDate());
               } else {
                 var year = parseInt(target.text(), 10)||0;
