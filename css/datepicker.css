@@ -137,11 +137,15 @@
 }
 .datepicker table td span.week {
   width: 100%;
+  height: 32px;
+  line-height: 32px;
 }
 .datepicker table td span.week.active .week-number, .datepicker table td span.week.active .week-desc {
   color: #fff;
 }
 .datepicker table td span.week .week-number, .datepicker table td span.week .week-desc {
+  height: 32px;
+  line-height: 32px;
   width: auto;
   border: none;
   margin: 0;

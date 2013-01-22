@@ -201,12 +201,16 @@
       }
       &.week {
         width: 100%;
+        height: 32px;
+        line-height: 32px;        
         &.active {
           .week-number, .week-desc {
             color: #fff;
           }
         }        
         .week-number, .week-desc {
+          height: 32px;
+          line-height: 32px;        
           width: auto;
           border: none;
           margin: 0;
