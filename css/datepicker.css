@@ -143,6 +143,15 @@
 .datepicker table td span.week.active .week-number, .datepicker table td span.week.active .week-desc {
   color: #fff;
 }
+.datepicker table td span.week.disabled, .datepicker table td span.week.disabled:hover {
+  background: none;
+  color: #999999;
+  cursor: default;
+}
+.datepicker table td span.week.disabled .week-number, .datepicker table td span.week.disabled .week-desc, .datepicker table td span.week.disabled:hover .week-number, .datepicker table td span.week.disabled:hover .week-desc {
+  background: none;
+  cursor: default;
+}
 .datepicker table td span.week .week-number, .datepicker table td span.week .week-desc {
   height: 32px;
   line-height: 32px;

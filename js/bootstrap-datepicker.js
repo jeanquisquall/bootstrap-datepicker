@@ -397,24 +397,29 @@
           currentSelectedYear = moment(this.date).year(),
           day = moment(d).startOf('month').day(1),
           currentSelectedWeek = moment(this.date).format('ww'),
-          cssClass = "";
+          cssClass = "",
+          startDate = moment(this.startDate),
+          endDate = moment(this.endDate);
+          
           
       html += this._weekAsHtml(day, 
                           currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww'), 
-                          today.year() === viewYear && today.format('ww') === day.format('ww'));
+                          today.year() === viewYear && today.format('ww') === day.format('ww'),
+                          day < startDate || day > endDate);
       day = moment(day).day(8);        
       
       while (day.month() === month) {
         html += this._weekAsHtml(day,
                             currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww'), 
-                            today.year() === viewYear && today.format('ww') === day.format('ww'));
+                            today.year() === viewYear && today.format('ww') === day.format('ww'),
+                            day < startDate || day > endDate);
         day = moment(day).day(8);        
       }
       
 			this.picker.find('.datepicker-weeks td').html(html);      
     },
     
-    _weekAsHtml: function(day, isActive, isToday) {
+    _weekAsHtml: function(day, isActive, isToday, isDisabled) {
       var cssClass = "";
       if (isActive) {
         cssClass = " active";
@@ -422,6 +427,9 @@
       if (isToday) {
         cssClass += " today";
       }        
+      if (isDisabled) {
+        cssClass += " disabled";
+      }
       return '<span class="week'+cssClass+'" data-date="'+day.format('YYYY/MM/DD')+'">'+
                 '<span class="week-number">'+dates[this.language].week+' '+day.format('ww')+'</span>'+
                 '<span class="week-desc">'+dates[this.language].from+' '+moment(day).format('DD/MM')+' '+dates[this.language].to+' '+moment(day).day(7).format('DD/MM')+'</span>'+
@@ -632,10 +640,12 @@
                     day = 1,
                     year = this.viewDate.getUTCFullYear();
   							this._setDate(UTCDate(year, month, day,0,0,0,0));
-              } else if (target.is('.week') || target.is('.week-number') || target.is('.week-desc')) {
+              } else if (target.is('.week') || target.is('.week-number') || target.is('.week-desc')) {                
                 target = target.closest('span.week');
-                var date = moment(target.data('date'), 'YYYY/MM/DD');
-                this._setDate(date.toDate());
+                if (!target.is('.disabled')) {
+                  var date = moment(target.data('date'), 'YYYY/MM/DD');
+                  this._setDate(date.toDate());
+                }
               } else {
                 var year = parseInt(target.text(), 10)||0;
                 this.viewDate.setUTCFullYear(year);

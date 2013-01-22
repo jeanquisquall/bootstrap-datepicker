@@ -208,6 +208,15 @@
             color: #fff;
           }
         }        
+        &.disabled, &.disabled:hover {
+          background: none;
+          color: #999999;
+          cursor: default;        
+          .week-number, .week-desc {
+            background: none;
+            cursor: default;        
+          }
+        }        
         .week-number, .week-desc {
           height: 32px;
           line-height: 32px;        
@@ -216,7 +225,7 @@
           margin: 0;
           &:hover {
             background: none;
-          }        
+          }
         }
         .week-number {
           float: left;
@@ -243,7 +252,7 @@
       &.disabled, &.disabled:hover {
         background: none;
         color: #999999;
-        cursor: default;
+        cursor: default;        
       }
       
       &.today,
