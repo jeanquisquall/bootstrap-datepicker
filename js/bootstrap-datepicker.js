@@ -629,18 +629,10 @@
                   });
                 }
 							} else if (target.is('.quarter')) {
-								var month = target.parent().find('span').index(target) * 3;
-								this.viewDate.setUTCMonth(month);
-								this.element.trigger({
-									type: 'changeMonth',
-									date: this.viewDate
-								});
-                this.date = new Date(this.viewDate);
-                this.element.trigger({
-                  type: 'changeDate',
-                  date: this.date,
-                  viewMode: DPGlobal.modes[this.viewMode].clsName
-                });
+								var month = target.parent().find('span').index(target) * 3,
+                    day = 1,
+                    year = this.viewDate.getUTCFullYear();
+  							this._setDate(UTCDate(year, month, day,0,0,0,0));
               } else if (target.is('.week') || target.is('.week-number') || target.is('.week-desc')) {
                 target = target.closest('span.week');
                 var date = moment(target.data('date'));
