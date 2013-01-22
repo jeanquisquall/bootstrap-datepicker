@@ -74,6 +74,27 @@
       this.minViewMode = 1;
     }
     
+    if (options.weeklyView) {
+      DPGlobal.modes = [
+  			{
+  				clsName: 'weeks',
+  				navFnc: 'Month',
+  				navStep: 1
+  			},
+  			{
+  				clsName: 'months',
+  				navFnc: 'FullYear',
+  				navStep: 1
+  			},
+  			{
+  				clsName: 'years',
+  				navFnc: 'FullYear',
+  				navStep: 10
+        }
+      ];
+      this.minViewMode = 0;
+    }
+    
 		this.format = DPGlobal.parseFormat(options.format||this.element.data('date-format')||'mm/dd/yyyy');
 		this.isInput = this.element.is('input');
     this.isInline = false;
@@ -138,6 +159,7 @@
 		this.fillDow();
     this.fillQuarters();
 		this.fillMonths();
+    this.fillWeeks();
 		this.update();
 		this.showMode();
     
@@ -364,6 +386,48 @@
 			}
 			this.picker.find('.datepicker-quarters td').html(html);
     },
+    
+    fillWeeks: function() {
+			var d = new Date(this.viewDate),
+        	viewYear = moment(d).year(),
+			    html = '',
+          i = 0,
+          today = moment(),
+          month = moment(d).month(),
+          currentSelectedYear = moment(this.date).year(),
+          day = moment(d).startOf('month').day(1),
+          currentSelectedWeek = moment(this.date).format('ww'),
+          cssClass = "";
+      if (currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww')) {
+        cssClass = " active";
+      }
+      if (today.year() === viewYear && today.format('ww') === day.format('ww')) {        
+        cssClass += " today";
+      }
+      html += '<span class="week'+cssClass+'" data-date="'+day.format('L')+'">'+
+                '<span class="week-number">Semaine '+day.format('ww')+'</span>'+
+                '<span class="week-desc">Du '+moment(day).format('DD/MM')+' au '+moment(day).day(7).format('DD/MM')+'</span>'+
+              '</span>';
+
+      day = moment(day).day(8);        
+      
+      while (day.month() === month) {
+        cssClass = "";
+        if (currentSelectedYear === viewYear && currentSelectedWeek === day.format('ww')) {
+          cssClass = " active";
+        }
+        if (today.year() === viewYear && today.format('ww') === day.format('ww')) {
+          cssClass += " today";
+        }        
+        html += '<span class="week'+cssClass+'" data-date="'+day.format('L')+'">'+
+                  '<span class="week-number">Semaine '+day.format('ww')+'</span>'+
+                  '<span class="week-desc">Du '+ moment(day).format('DD/MM') + ' au ' + moment(day).day(7).format('DD/MM') +'</span>'+
+                '</span>';
+        day = moment(day).day(8);        
+      }
+      
+			this.picker.find('.datepicker-weeks td').html(html);      
+    },
 
 		fill: function() {
 			var d = new Date(this.viewDate),
@@ -383,6 +447,7 @@
 			this.updateNavArrows();
       this.fillQuarters();
 			this.fillMonths();
+      this.fillWeeks();
 			var prevMonth = UTCDate(year, month-1, 28,0,0,0,0),
 				day = DPGlobal.getDaysInMonth(prevMonth.getUTCFullYear(), prevMonth.getUTCMonth());
 			prevMonth.setUTCDate(day);
@@ -434,9 +499,13 @@
 							.text(year)
 							.end()
 						.find('span').removeClass('active');
+			var weeks = this.picker.find('.datepicker-weeks')
+						.find('th:eq(1)')
+							.text(dates[this.language].months[month] + ' ' + year)
+							.end();
 			if (currentYear === year) {
 				months.eq(this.date.getUTCMonth()).addClass('active');
-        quarters.eq(this.date.getUTCMonth() / 3).addClass('active');
+        quarters.eq(this.date.getUTCMonth() / 3).addClass('active');        
 			}
       if (this.minViewMode === 1 && today.getUTCFullYear() === year) {
         months.eq(today.getUTCMonth()).addClass('today');
@@ -566,14 +635,16 @@
 									type: 'changeMonth',
 									date: this.viewDate
 								});
-                if (this.minViewMode === 1) {
-                  this.date = new Date(this.viewDate);
-                  this.element.trigger({
-                    type: 'changeDate',
-                    date: this.date,
-                    viewMode: DPGlobal.modes[this.viewMode].clsName
-                  });
-                }
+                this.date = new Date(this.viewDate);
+                this.element.trigger({
+                  type: 'changeDate',
+                  date: this.date,
+                  viewMode: DPGlobal.modes[this.viewMode].clsName
+                });
+              } else if (target.is('.week') || target.is('.week-number') || target.is('.week-desc')) {
+                target = target.closest('span.week');
+                var date = moment(target.data('date'));
+                this._setDate(date.toDate());
               } else {
                 var year = parseInt(target.text(), 10)||0;
                 this.viewDate.setUTCFullYear(year);
@@ -979,6 +1050,13 @@
 								'<table class=" table-condensed">'+
 									DPGlobal.headTemplate+
 									'<tbody></tbody>'+
+									DPGlobal.footTemplate+
+								'</table>'+
+							'</div>'+
+							'<div class="datepicker-weeks">'+
+								'<table class="table-condensed">'+
+									DPGlobal.headTemplate+
+									DPGlobal.contTemplate+
 									DPGlobal.footTemplate+
 								'</table>'+
 							'</div>'+

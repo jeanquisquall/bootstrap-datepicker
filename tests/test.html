@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link rel="stylesheet" href="../css/datepicker.css" />
+      <link rel="stylesheet" href="../css/bootstrap-responsive.min.css" />
+      <link rel="stylesheet" href="../css/bootstrap.min.css" />
+      <script src="assets/jquery-1.7.1.min.js"></script>
+      <script src="../js/bootstrap-datepicker.js"></script>
+      <script type="text/javascript" src="../js/moment.min.js"></script>
+      
+      <style>
+          #datepicker {
+            border: 1px solid #efefef;
+            position: absolute;
+            top: 300px;
+            left: 500px;
+          }
+      </style>
+      
+    </head>
+    <body>
+      <div id="datepicker">        
+      </div>
+    </body>
+    
+    <script type="text/javascript" charset="utf-8">
+    $('#datepicker').datepicker({
+                    format: 'yyyy-mm-dd',
+                    quarterlyView: false,
+                    weeklyView: true,
+                    // minViewMode: 'months',
+                    todayHighlight: true,
+                    todayBtn: true,
+                    startView: 'year',
+                    startDate: '2001-01-01',
+                    endDate: '2020-08-28'
+                });
+                
+    $('#datepicker').datepicker().on('changeDate', function(ev) {    
+      console.log(ev.date);
+    });
+    </script>
+</html>

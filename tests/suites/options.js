@@ -316,3 +316,30 @@ test('Today Highlight: today\'s date is highlighted when not active in quarterly
         ok(!target.hasClass('today'), 'Next quarter is not marked with "today" class');
 }));
 
+test('Today Highlight: today\'s date is highlighted in weekly view too when minViewMode', patch_date(function(Date){
+    Date.now = new Date(2013, 2, 14);
+    var input = $('<input />')
+                .appendTo('#qunit-fixture')
+                .val('2013-03-01')
+                .datepicker({
+                    format: 'yyyy-mm-dd',
+                    todayHighlight: true,
+                    weeklyView: true,
+                    startView: 'month'
+                }),
+        dp = input.data('datepicker'),
+        picker = dp.picker,
+        target;
+
+        input.focus();
+        ok(picker.find('.datepicker-weeks').is(':visible'), 'Weeks view visible');
+        equal(picker.find('.datepicker-weeks thead .switch').text(), 'March 2013', 'Title is "March 2013"');
+
+        target = picker.find('.datepicker-weeks tbody span:contains("Semaine 11")');
+        ok(target.hasClass('today'), 'Today is marked with "today" class');
+        target = picker.find('.datepicker-weeks tbody span:contains("Semaine 10")');
+        ok(!target.hasClass('today'), 'Previous week is not marked with "today" class');
+}));
+
+
+

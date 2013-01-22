@@ -27,7 +27,7 @@
   display: inline-block;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-bottom: 7px solid #ccc;
+  border-bottom: 7px solid #cccccc;
   border-bottom-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   top: -7px;
@@ -38,7 +38,7 @@
   display: inline-block;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-bottom: 6px solid #ffffff;
+  border-bottom: 6px solid white;
   position: absolute;
   top: -6px;
   left: 7px;
@@ -134,6 +134,30 @@
 }
 .datepicker table td span.quarter {
   width: 100%;
+}
+.datepicker table td span.week {
+  width: 100%;
+}
+.datepicker table td span.week.active .week-number, .datepicker table td span.week.active .week-desc {
+  color: #fff;
+}
+.datepicker table td span.week .week-number, .datepicker table td span.week .week-desc {
+  width: auto;
+  border: none;
+  margin: 0;
+}
+.datepicker table td span.week .week-number:hover, .datepicker table td span.week .week-desc:hover {
+  background: none;
+}
+.datepicker table td span.week .week-number {
+  float: left;
+  padding-left: 20px;
+}
+.datepicker table td span.week .week-desc {
+  float: right;
+  padding-right: 15px;
+  font-size: 11px;
+  color: #777;
 }
 .datepicker table td span:hover {
   background: #eeeeee;
