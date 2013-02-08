@@ -512,11 +512,11 @@
 							.end();
 			if (currentYear === year) {
 				months.eq(this.date.getUTCMonth()).addClass('active');
-        quarters.eq(this.date.getUTCMonth() / 3).addClass('active');        
+        quarters.eq(Math.floor(this.date.getUTCMonth() / 3)).addClass('active');        
 			}
       if (this.minViewMode === 1 && today.getUTCFullYear() === year) {
         months.eq(today.getUTCMonth()).addClass('today');
-        quarters.eq(today.getUTCMonth() / 3).addClass('today');
+        quarters.eq(Math.floor(today.getUTCMonth() / 3)).addClass('today');
       }
 			if (year < startYear || year > endYear) {
 				months.addClass('disabled');
